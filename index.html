@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Top Selling Products</title>
+  </head>
+  <body>
+    <h1>Top Selling Products</h1>
+    <ul id="products-list"></ul>
+
+    <script>
+      function fetchProducts() {
+        const apiUrl = "http://3.214.91.27:1337/api/products?populate=image"; // API URL
+
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            const productsList = document.getElementById("products-list");
+
+            data.data.forEach(product => {
+              console.log("Full product object:", product); // Log the whole product object
+              
+              const li = document.createElement("li");
+
+              // Correct way to access image URL
+              const imageUrl = product.image?.url
+                ? `http://3.214.91.27:1337${product.image.url}`
+                : '';
+
+              li.innerHTML = `
+                <h2>${product.name}</h2>
+                <p>Price: $${product.price}</p>
+                <p>Rating: ${product.rating}/5</p>
+                ${
+                  imageUrl
+                    ? `<img src="${imageUrl}" alt="${product.name}" style="width: 200px;">`
+                    : ""
+                }
+              `;
+
+              productsList.appendChild(li);
+            });
+          })
+          .catch(error => console.error("Error:", error));
+      }
+
+      window.onload = fetchProducts;
+    </script>
+  </body>
+</html>
